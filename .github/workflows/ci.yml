@@ -1,0 +1,44 @@
+name: CI- Verification du code
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Recuperer le code
+        uses: actions/checkout@v4
+
+      - name: Verifier la structure des fichiers
+        run: |
+          echo "=== Verification des fichiers ==="
+          ls -la
+          echo ""
+          echo "=== Verification index.html ==="
+          if [-f "index.html" ]; then
+            echo "OK: index.html existe"
+          else
+            echo "ERREUR: index.html manquant"
+            exit 1
+          fi
+      - name: Valider le HTML
+        run: |
+          echo "=== Validation HTML basique ==="
+          if grep-q "<!DOCTYPE html>" index.html; then
+            echo "OK: DOCTYPE present"
+          else
+            echo "ERREUR: DOCTYPE manquant"
+            exit 1
+          fi
+          if grep-q "</html>" index.html; then
+            echo "OK: Balise html fermee"
+          else
+            echo "ERREUR: Balise html non fermee"
+            exit 1
+          fi
+          echo "Validation terminee avec succes !"
